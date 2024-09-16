@@ -14,7 +14,7 @@ A sleek and user-friendly web application that transcribes YouTube videos with e
 
 ## Demo
 
-![Video Transcriber Demo](media/final_gif.gif)
+![Video Transcriber Demo]<img src="media/final_gif.gif" alt="Video Transcriber Demo" width="800" />
 *A quick demonstration of the transcription process.*
 
 ## Features

@@ -4,17 +4,17 @@ A sleek and user-friendly web application that transcribes YouTube videos with e
 
 ## Screenshots
 
-### Main Interface
-![Main Interface](screenshot1.png)
-*The clean and intuitive main interface of the Video Transcriber.*
-
 ### Transcription in Progress
-![Transcription Progress](screenshot2.png)
+![Transcription Progress](transcriping.png)
 *Real-time progress bar showing the transcription status.*
+
+### Transcript generated
+![Main Interface](transcript.png)
+*The clean and intuitive main interface of the Video Transcriber.*
 
 ## Demo
 
-![Video Transcriber Demo](demo.gif)
+![Video Transcriber Demo](final_gif.gif)
 *A quick demonstration of the transcription process.*
 
 ## Features

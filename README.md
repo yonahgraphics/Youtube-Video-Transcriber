@@ -5,7 +5,7 @@ A sleek and user-friendly web application that transcribes YouTube videos with e
 ## Screenshots
 
 ### Transcription in Progress
-![Transcription Progress](media/transcriping.png)
+![Transcription Progress](media/transcribing.png)
 *Real-time progress bar showing the transcription status.*
 
 ### Transcript generated

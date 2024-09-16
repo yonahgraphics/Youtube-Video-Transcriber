@@ -1,8 +1,21 @@
 # YouTube Video Transcriber
 
-![Video Transcriber Demo](demo.gif)
-
 A sleek and user-friendly web application that transcribes YouTube videos with ease. Simply paste a YouTube URL, and get a text transcript in seconds!
+
+## Screenshots
+
+### Main Interface
+![Main Interface](screenshot1.png)
+*The clean and intuitive main interface of the Video Transcriber.*
+
+### Transcription in Progress
+![Transcription Progress](screenshot2.png)
+*Real-time progress bar showing the transcription status.*
+
+## Demo
+
+![Video Transcriber Demo](demo.gif)
+*A quick demonstration of the transcription process.*
 
 ## Features
 
@@ -23,7 +36,7 @@ A sleek and user-friendly web application that transcribes YouTube videos with e
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yonahgraphics/Youtube-Video-Transcriber.git
+   git clone https://github.com/yourusername/youtube-video-transcriber.git
    cd youtube-video-transcriber
    ```
 

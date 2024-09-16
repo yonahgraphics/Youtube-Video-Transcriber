@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcriber</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4c51bf;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #434190;
+        }
+        button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+        .transcript {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .actions button {
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .actions button.copied {
+            background-color: #48bb78;
+        }
+        .hidden {
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            width: 0;
+            height: 20px;
+            background-color: #4c51bf;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Transcriber</h1>
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Enter YouTube video URL">
+            <button id="transcribeBtn">Transcribe</button>
+        </div>
+        <div id="loading" class="loading hidden">
+            <div>Transcribing...</div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <div id="progressText" class="progress-text">0%</div>
+        </div>
+        <div id="transcriptContainer" class="hidden">
+            <div id="transcript" class="transcript"></div>
+            <div class="actions">
+                <button id="copyBtn">Copy</button>
+                <button id="downloadBtn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoUrlInput = document.getElementById('videoUrl');
+        const transcribeBtn = document.getElementById('transcribeBtn');
+        const loading = document.getElementById('loading');
+        const transcriptContainer = document.getElementById('transcriptContainer');
+        const transcriptDiv = document.getElementById('transcript');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        let progress = 0;
+        let progressInterval;
+
+        function updateProgress() {
+            progress += 1;
+            if (progress > 100) {
+                clearInterval(progressInterval);
+                progress = 100;
+            }
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${progress}%`;
+        }
+
+        transcribeBtn.addEventListener('click', async () => {
+            const videoUrl = videoUrlInput.value.trim();
+            if (!videoUrl) return;
+
+            loading.classList.remove('hidden');
+            transcriptContainer.classList.add('hidden');
+            transcribeBtn.disabled = true;
+
+            progress = 0;
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+            progressInterval = setInterval(updateProgress, 500);
+
+            try {
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: videoUrl }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Transcription failed');
+                }
+
+                const data = await response.json();
+                transcriptDiv.textContent = data.transcript;
+                transcriptContainer.classList.remove('hidden');
+            } catch (error) {
+                alert('An error occurred: ' + error.message);
+            } finally {
+                clearInterval(progressInterval);
+                progress = 100;
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                loading.classList.add('hidden');
+                transcribeBtn.disabled = false;
+            }
+        });
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(transcriptDiv.textContent).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.classList.add('copied', 'pulse');
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied', 'pulse');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const element = document.createElement('a');
+            const file = new Blob([transcriptDiv.textContent], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'transcript.txt';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        });
+    </script>
+</body>
+</html>

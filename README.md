@@ -23,7 +23,7 @@ A sleek and user-friendly web application that transcribes YouTube videos with e
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/youtube-video-transcriber.git
+   git clone https://github.com/yonahgraphics/Youtube-Video-Transcriber.git
    cd youtube-video-transcriber
    ```
 
